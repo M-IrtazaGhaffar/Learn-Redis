@@ -44,3 +44,46 @@ then Redis will respond with some error (Nil)
 ```
 mget name:1 name:2 university:3
 ```
+
+## Setting more then one values in Redis
+```
+mset name:1 "IRTAZA" name:2 "ABDULLAH" university:3 "AHMED"
+```
+
+## Increment a value in Redis
+```
+set count 0
+incr count
+```
+
+## Increment a value by 10 in Redis
+```
+set count 0
+incrby count 10
+```
+
+## Using Redis with Node JS
+```
+const express = require('express')
+const { client } = require('./client')
+const app = express()
+const port = 5000
+
+app.get('/:name', async (req, res) => {
+    console.log(req.params);
+    const v1 = await client.get(`name:${req.params.name}`)
+    await client.set('name:1', "IRTAZA")
+    const v2 = await client.get(`name:${req.params.name}`)
+    res.json({
+        prev: v1,
+        now: v2
+    })
+    await client.expire(`name:${req.params.name}`, 10)
+})
+app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+```
+
+## Delete or Expire a key in Redis after 10 sec
+```
+expire name:1 10
+```
